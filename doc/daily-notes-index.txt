@@ -34,7 +34,6 @@ The plugin can be configured through the `setup()` function:
     require('daily-notes-index').setup({
         daily_notes_folder = "~/Documents/daily-notes",
         index_filename = "diary.md", 
-        auto_update = true
     })
 <
 
@@ -47,15 +46,6 @@ daily_notes_folder (string)
 index_filename (string)
     Default: "diary.md"
     The name of the index file to create/update.
-
-auto_update (boolean)
-    Default: true
-    Whether to automatically update the index when saving daily notes.
-
-You can also disable the plugin entirely by setting:
->
-    vim.g.daily_notes_index_disable = 1
-<
 
 ==============================================================================
 3. FUNCTIONS                                        *daily-notes-index-functions*
@@ -96,7 +86,7 @@ setup({opts})                                           *daily-notes-index.setup
 
 BufWritePost
     Automatically updates the diary index when saving a file that matches
-    the daily notes pattern, if `auto_update` is enabled.
+    the daily notes pattern.
 
 The autocommand is grouped under "DailyNotesIndex" and can be managed
 with standard autocommand commands.

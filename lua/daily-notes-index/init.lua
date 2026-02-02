@@ -2,7 +2,6 @@ local M = {}
 
 -- Default configuration
 local default_config = {
-    daily_notes_folder = "~/Documents/daily-notes",
     index_filename = "diary.md",
 }
 
@@ -199,6 +198,11 @@ end
 -- @param opts table: Optional configuration options
 function M.setup(opts)
     opts = opts or {}
+
+    if opts.daily_notes_folder == nil then
+        error("daily_notes_folder must be provided in the configuration")
+    end
+
     -- Merge user options with defaults
     config = vim.tbl_deep_extend("force", default_config, opts)
 
@@ -212,4 +216,3 @@ end
 M.setup()
 
 return M
-
