@@ -134,6 +134,21 @@ Get the current plugin configuration.
 ### `setup(opts)`
 Configure the plugin with user options.
 
+## Commands
+
+### `DailyNotesIndex open`
+
+Opens the daily notes index file in the current buffer. If the index file doesn't exist, it will be created automatically.
+
+```vim
+:DailyNotesIndex open
+```
+
+The command handles the following scenarios:
+- If the plugin is not configured, it shows an error message
+- If the index file doesn't exist, it creates a new one with the configured title
+- Opens the index file in the current window for immediate editing
+
 ## License
 
 MIT License# daily-notes-index.nvim
