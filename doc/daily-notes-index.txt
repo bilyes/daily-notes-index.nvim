@@ -17,7 +17,7 @@ CONTENTS                                       *daily-notes-index-contents*
 
 The daily-notes-index plugin automatically maintains an index file for your
 daily notes in Markdown format. When you save a new daily note, the plugin
-automatically updates a diary.md file with a link to the new entry, organized
+automatically updates an index.md file with a link to the new entry, organized
 by year and month.
 
 The plugin detects daily notes based on date patterns in filenames and creates
@@ -33,7 +33,7 @@ The plugin can be configured through the `setup()` function:
 >
     require('daily-notes-index').setup({
         daily_notes_folder = "~/Documents/daily-notes",
-        index_filename = "diary.md", 
+        index_filename = "index.md", 
     })
 <
 
@@ -44,17 +44,17 @@ daily_notes_folder (string)
     The folder where your daily notes are stored.
 
 index_filename (string)
-    Default: "diary.md"
+    Default: "index.md"
     The name of the index file to create/update.
 
 ==============================================================================
 3. FUNCTIONS                                        *daily-notes-index-functions*
 
 update_index({note_path}, {index_path})                 *daily-notes-index.update_index()*
-    Updates the diary index with a new daily note entry.
+    Updates the index with a new daily note entry.
     Parameters:
         {note_path} (string): Path to the newly created daily note
-        {index_path} (string): Path to the diary index file
+        {index_path} (string): Path to the index file
 
 is_daily_note({note_path}, {daily_notes_folder_path})  *daily-notes-index.is_daily_note()*
     Checks if the given note path corresponds to a daily note.
@@ -65,11 +65,11 @@ is_daily_note({note_path}, {daily_notes_folder_path})  *daily-notes-index.is_dai
         boolean: true if it's a daily note, false otherwise
 
 get_index_path({daily_notes_folder_path})              *daily-notes-index.get_index_path()*
-    Gets the path to the diary index file.
+    Gets the path to the index file.
     Parameters:
         {daily_notes_folder_path} (string): Configured daily notes folder path
     Returns:
-        string: Path to the diary index file
+        string: Path to the index file
 
 get_config()                                           *daily-notes-index.get_config()*
     Returns the current plugin configuration.
@@ -85,7 +85,7 @@ setup({opts})                                           *daily-notes-index.setup
 4. AUTOCOMMANDS                                    *daily-notes-index-autocmds*
 
 BufWritePost
-    Automatically updates the diary index when saving a file that matches
+    Automatically updates the index when saving a file that matches
     the daily notes pattern.
 
 The autocommand is grouped under "DailyNotesIndex" and can be managed

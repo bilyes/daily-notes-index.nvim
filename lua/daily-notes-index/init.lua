@@ -2,14 +2,15 @@ local M = {}
 
 -- Default configuration
 local default_config = {
-    index_filename = "diary.md",
+    index_filename = "index.md",
+    index_title = "Daily Notes Index",
 }
 
 -- Global config variable
 local config = vim.deepcopy(default_config)
 
 local function _build_index_content(entries)
-    local content = "# Diary\n"
+    local content = string.format("# %s\n", config.index_title)
     local last_year = nil
     local last_month = nil
 
@@ -34,7 +35,7 @@ local function _build_index_content(entries)
     return content
 end
 
-local function _read_diary_entries(index_path)
+local function _read_index_entries(index_path)
     if vim.fn.filereadable(index_path) ~= 1 then
         return {}
     end
@@ -125,9 +126,9 @@ local function _build_note_link(year, month, day, path_str)
     return string.format("- [%s](%s)", link_text, path_str:gsub("%.md$", ""))
 end
 
--- Updates the diary index with a new daily note entry
+-- Updates the index with a new daily note entry
 -- @param note_path string: The path of the newly created daily note
--- @param index_path string: The path to the diary index file
+-- @param index_path string: The path to the index file
 -- @return nil
 function M.update_index(note_path, index_path)
     if not note_path or not index_path then
@@ -154,7 +155,7 @@ function M.update_index(note_path, index_path)
     local entries = {}
     if vim.fn.filereadable(index_path) == 1 then
         -- Parse existing entries to check for duplicates
-        entries = _read_diary_entries(index_path)
+        entries = _read_index_entries(index_path)
         -- Check if this entry already exists
         for _, entry in ipairs(entries) do
             if entry.year == year and entry.month == month and entry.day == day then
@@ -181,9 +182,9 @@ function M.is_daily_note(note_path, daily_notes_folder_path)
     return note_path:match(daily_notes_folder_path:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0"))
 end
 
--- Gets the path to the diary index file
+-- Gets the path to the index file
 -- @param daily_notes_folder_path string: The configured daily notes folder path
--- @return string: The path to the diary index file
+-- @return string: The path to the index file
 function M.get_index_path(daily_notes_folder_path)
     return daily_notes_folder_path .. "/" .. config.index_filename
 end
