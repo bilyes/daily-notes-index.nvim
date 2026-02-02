@@ -4,7 +4,7 @@ A Neovim plugin that automatically maintains an index file for your daily notes 
 
 ## Features
 
-- Automatically updates a diary index when you save a new daily note
+- Automatically updates an index file when you save a new daily note
 - Organizes entries by year and month
 - Creates chronologically sorted links with day names
 - Detects daily notes based on date patterns in filenames
@@ -19,11 +19,12 @@ A Neovim plugin that automatically maintains an index file for your daily notes 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
-{
+ {
     "bilyes/daily-notes-index.nvim",
     opts = {
         daily_notes_folder = "~/Documents/daily-notes",
-        index_filename = "diary.md",
+        index_filename = "index.md",
+        index_title = "Daily Notes Index",
     }
 }
 ```
@@ -36,7 +37,8 @@ use {
     config = function()
         require("daily-notes-index").setup({
             daily_notes_folder = "~/Documents/daily-notes",
-            index_filename = "diary.md",
+            index_filename = "index.md",
+            index_title = "Daily Notes Index",
         })
     end
 }
@@ -49,7 +51,8 @@ Plug "bilyes/daily-notes-index.nvim"
 lua << EOF
 require("daily-notes-index").setup({
     daily_notes_folder = "~/Documents/daily-notes",
-    index_filename = "diary.md",
+    index_filename = "index.md",
+    index_title = "Daily Notes Index",
 })
 EOF
 ```
@@ -61,7 +64,8 @@ The plugin can be configured through the `setup()` function:
 ```lua
 require("daily-notes-index").setup({
     daily_notes_folder = "~/Documents/daily-notes",
-    index_filename = "diary.md",
+    index_filename = "index.md",
+    index_title = "Daily Notes Index",
 })
 ```
 
@@ -70,7 +74,8 @@ require("daily-notes-index").setup({
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `daily_notes_folder` | string | `"~/Documents/daily-notes"` | The folder where your daily notes are stored |
-| `index_filename` | string | `"diary.md"` | The name of the index file to create/update |
+| `index_filename` | string | `"index.md"` | The name of the index file to create/update |
+| `index_title` | string | `"Daily Notes Index"` | The title/header of the index file |
 
 
 ## Usage
@@ -94,10 +99,10 @@ The plugin expects daily notes to have date patterns in their filenames. Support
 
 ### Index File Format
 
-The generated index file (`diary.md` by default) will look like:
+The generated index file (`index.md` by default) will look like:
 
 ```markdown
-# Diary
+# Daily Notes Index
 
 ## 2025
 
@@ -115,13 +120,13 @@ The generated index file (`diary.md` by default) will look like:
 ## API Functions
 
 ### `update_index(note_path, index_path)`
-Manually update the diary index with a new daily note entry.
+Manually update the index with a new daily note entry.
 
 ### `is_daily_note(note_path, daily_notes_folder_path)`
 Check if a given note path corresponds to a daily note.
 
 ### `get_index_path(daily_notes_folder_path)`
-Get the path to the diary index file.
+Get the path to the index file.
 
 ### `get_config()`
 Get the current plugin configuration.

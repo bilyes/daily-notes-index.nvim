@@ -5,7 +5,7 @@
 -- Create autocmd group for daily notes
 local daily_notes_group = vim.api.nvim_create_augroup("DailyNotesIndex", { clear = true })
 
--- Auto-update diary index when saving a daily note
+-- Auto-update index when saving a daily note
 vim.api.nvim_create_autocmd("BufWritePost", {
     group = daily_notes_group,
     pattern = "*",
@@ -21,5 +21,5 @@ vim.api.nvim_create_autocmd("BufWritePost", {
             daily_notes_index.update_index(path, index_path)
         end
     end,
-    desc = "Update diary index when saving daily notes"
+    desc = "Update index when saving daily notes"
 })
