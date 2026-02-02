@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
         -- Get user config
         local config = daily_notes_index.get_config()
 
-        if config.auto_update and daily_notes_index.is_daily_note(path, config.daily_notes_folder) then
+        if daily_notes_index.is_daily_note(path, config.daily_notes_folder) then
             local index_path = daily_notes_index.get_index_path(config.daily_notes_folder)
             daily_notes_index.update_index(path, index_path)
         end
