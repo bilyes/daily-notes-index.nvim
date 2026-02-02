@@ -10,7 +10,8 @@ CONTENTS                                       *daily-notes-index-contents*
 1. Introduction ................................... |daily-notes-index-intro|
 2. Configuration ................................. |daily-notes-index-config|
 3. Functions ....................................... |daily-notes-index-functions|
-4. Autocommands .................................. |daily-notes-index-autocmds|
+4. Commands ....................................... |daily-notes-index-commands|
+5. Autocommands .................................. |daily-notes-index-autocmds|
 
 ==============================================================================
 1. INTRODUCTION                                            *daily-notes-index-intro*
@@ -81,8 +82,36 @@ setup({opts})                                           *daily-notes-index.setup
     Parameters:
         {opts} (table): Optional configuration options
 
+open_index()                                                    *open_index()*
+    Opens the daily notes index file in the current buffer. If the index
+    file doesn't exist, it will be created automatically with the configured
+    title.
+
+    Parameters: None
+
 ==============================================================================
-4. AUTOCOMMANDS                                    *daily-notes-index-autocmds*
+4. COMMANDS                                           *daily-notes-index-commands*
+
+DailyNotesIndex                                      *:DailyNotesIndex*
+
+:DailyNotesIndex {subcommand}
+
+Available subcommands:
+
+open                                                    *:DailyNotesIndex-open*
+    Opens the daily notes index file in the current buffer. If the index
+    file doesn't exist, it will be created automatically.
+
+    Example:
+        :DailyNotesIndex open
+
+    The command handles error cases gracefully:
+    - Shows an error if the plugin is not configured
+    - Creates the index file if it doesn't exist
+    - Opens the file in the current window for editing
+
+==============================================================================
+5. AUTOCOMMANDS                                    *daily-notes-index-autocmds*
 
 BufWritePost
     Automatically updates the index when saving a file that matches
