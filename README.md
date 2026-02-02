@@ -12,7 +12,7 @@ A Neovim plugin that automatically maintains an index file for your daily notes 
 
 ## Requirements
 
-- Neovim 0.7.0 or later
+- Neovim 0.11.0 or later
 
 ## Installation
 
@@ -20,11 +20,10 @@ A Neovim plugin that automatically maintains an index file for your daily notes 
 
 ```lua
 {
-    "yourusername/daily-notes-index.nvim",
+    "bilyes/daily-notes-index.nvim",
     opts = {
         daily_notes_folder = "~/Documents/daily-notes",
         index_filename = "diary.md",
-        auto_update = true
     }
 }
 ```
@@ -33,12 +32,11 @@ A Neovim plugin that automatically maintains an index file for your daily notes 
 
 ```lua
 use {
-    "yourusername/daily-notes-index.nvim",
+    "bilyes/daily-notes-index.nvim",
     config = function()
         require("daily-notes-index").setup({
             daily_notes_folder = "~/Documents/daily-notes",
             index_filename = "diary.md",
-            auto_update = true
         })
     end
 }
@@ -47,12 +45,11 @@ use {
 ### Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
-Plug "yourusername/daily-notes-index.nvim"
+Plug "bilyes/daily-notes-index.nvim"
 lua << EOF
 require("daily-notes-index").setup({
     daily_notes_folder = "~/Documents/daily-notes",
     index_filename = "diary.md",
-    auto_update = true
 })
 EOF
 ```
@@ -65,7 +62,6 @@ The plugin can be configured through the `setup()` function:
 require("daily-notes-index").setup({
     daily_notes_folder = "~/Documents/daily-notes",
     index_filename = "diary.md",
-    auto_update = true
 })
 ```
 
@@ -75,13 +71,7 @@ require("daily-notes-index").setup({
 |--------|------|---------|-------------|
 | `daily_notes_folder` | string | `"~/Documents/daily-notes"` | The folder where your daily notes are stored |
 | `index_filename` | string | `"diary.md"` | The name of the index file to create/update |
-| `auto_update` | boolean | `true` | Whether to automatically update the index when saving daily notes |
 
-You can also disable the plugin entirely by setting:
-
-```lua
-vim.g.daily_notes_index_disable = 1
-```
 
 ## Usage
 
