@@ -212,7 +212,4 @@ function M.setup(opts)
     end
 end
 
--- Initialize with default config
-M.setup()
-
 return M
