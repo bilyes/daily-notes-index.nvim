@@ -1,8 +1,8 @@
 *daily-notes-index.txt*    Daily Notes Index Plugin                          *daily-notes-index*
 
-Author: [Your Name]
+Author: Ilyess Bachiri
 License: MIT
-Repository: https://github.com/yourusername/daily-notes-index.nvim
+Repository: https://github.com/bilyes/daily-notes-index.nvim
 
 ==============================================================================
 CONTENTS                                       *daily-notes-index-contents*
