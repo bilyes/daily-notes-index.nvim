@@ -1,0 +1,105 @@
+*daily-notes-index.txt*    Daily Notes Index Plugin                          *daily-notes-index*
+
+Author: [Your Name]
+License: MIT
+Repository: https://github.com/yourusername/daily-notes-index.nvim
+
+==============================================================================
+CONTENTS                                       *daily-notes-index-contents*
+
+1. Introduction ................................... |daily-notes-index-intro|
+2. Configuration ................................. |daily-notes-index-config|
+3. Functions ....................................... |daily-notes-index-functions|
+4. Autocommands .................................. |daily-notes-index-autocmds|
+
+==============================================================================
+1. INTRODUCTION                                            *daily-notes-index-intro*
+
+The daily-notes-index plugin automatically maintains an index file for your
+daily notes in Markdown format. When you save a new daily note, the plugin
+automatically updates a diary.md file with a link to the new entry, organized
+by year and month.
+
+The plugin detects daily notes based on date patterns in filenames and creates
+chronologically organized links in the following format:
+
+    - 2025-01-31 - Friday - (path/to/note)
+
+==============================================================================
+2. CONFIGURATION                                      *daily-notes-index-config*
+
+The plugin can be configured through the `setup()` function:
+
+>
+    require('daily-notes-index').setup({
+        daily_notes_folder = "~/Documents/daily-notes",
+        index_filename = "diary.md", 
+        auto_update = true
+    })
+<
+
+OPTIONS                                                 *daily-notes-index-options*
+
+daily_notes_folder (string)
+    Default: "~/Documents/daily-notes"
+    The folder where your daily notes are stored.
+
+index_filename (string)
+    Default: "diary.md"
+    The name of the index file to create/update.
+
+auto_update (boolean)
+    Default: true
+    Whether to automatically update the index when saving daily notes.
+
+You can also disable the plugin entirely by setting:
+>
+    vim.g.daily_notes_index_disable = 1
+<
+
+==============================================================================
+3. FUNCTIONS                                        *daily-notes-index-functions*
+
+update_index({note_path}, {index_path})                 *daily-notes-index.update_index()*
+    Updates the diary index with a new daily note entry.
+    Parameters:
+        {note_path} (string): Path to the newly created daily note
+        {index_path} (string): Path to the diary index file
+
+is_daily_note({note_path}, {daily_notes_folder_path})  *daily-notes-index.is_daily_note()*
+    Checks if the given note path corresponds to a daily note.
+    Parameters:
+        {note_path} (string): Path of the note to check
+        {daily_notes_folder_path} (string): Configured daily notes folder path
+    Returns:
+        boolean: true if it's a daily note, false otherwise
+
+get_index_path({daily_notes_folder_path})              *daily-notes-index.get_index_path()*
+    Gets the path to the diary index file.
+    Parameters:
+        {daily_notes_folder_path} (string): Configured daily notes folder path
+    Returns:
+        string: Path to the diary index file
+
+get_config()                                           *daily-notes-index.get_config()*
+    Returns the current plugin configuration.
+    Returns:
+        table: Current plugin configuration
+
+setup({opts})                                           *daily-notes-index.setup()*
+    Configures the plugin with user options.
+    Parameters:
+        {opts} (table): Optional configuration options
+
+==============================================================================
+4. AUTOCOMMANDS                                    *daily-notes-index-autocmds*
+
+BufWritePost
+    Automatically updates the diary index when saving a file that matches
+    the daily notes pattern, if `auto_update` is enabled.
+
+The autocommand is grouped under "DailyNotesIndex" and can be managed
+with standard autocommand commands.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
