@@ -21,4 +21,4 @@ jobs:
     
     - name: Run tests
       run: |
-        lua tests/init.lua
+        LUA_PATH="./lua/?.lua;./lua/?/init.lua;;" lua tests/init.lua
