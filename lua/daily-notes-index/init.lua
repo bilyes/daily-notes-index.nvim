@@ -52,32 +52,40 @@ local function _read_index_entries(index_path)
         if year_match then
             current_year = tonumber(year_match)
             current_month = nil
-        -- Capture month headers
-        else
-            local month_match = line:match("^### (.+)$")
-            if month_match and current_year then
-                current_month = month_match
-            -- Capture note entries
-            else
-                local note_entry = line:match("^%- %[([^%]]+)%]%(([^)]+)%)$")
-                if note_entry and current_year and current_month then
-                    -- Extract date from the entry
-                    local entry_date_str = note_entry:match("(%d%d%d%d%-%d%d%-%d%d)")
-                    if entry_date_str then
-                        local entry_year, entry_month, entry_day = entry_date_str:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
-                        if entry_year and entry_month and entry_day then
-                            table.insert(entries, {
-                                year = tonumber(entry_year),
-                                month = tonumber(entry_month),
-                                day = tonumber(entry_day),
-                                link = line,
-                                month_name = current_month
-                            })
-                        end
-                    end
-                end
-            end
+            goto continue
         end
+
+        -- Capture month headers
+        local month_match = line:match("^### (.+)$")
+        if month_match and current_year then
+            current_month = month_match
+            goto continue
+        end
+
+        -- Capture note entries
+        local note_entry = line:match("^%- %[([^%]]+)%]%(([^)]+)%)$")
+        if not note_entry or not current_year or not current_month then
+            goto continue
+        end
+
+        -- Extract date from the entry
+        local entry_date_str = note_entry:match("(%d%d%d%d%-%d%d%-%d%d)")
+        if not entry_date_str then
+            goto continue
+        end
+
+        local entry_year, entry_month, entry_day = entry_date_str:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
+        if entry_year and entry_month and entry_day then
+            table.insert(entries, {
+                year = tonumber(entry_year),
+                month = tonumber(entry_month),
+                day = tonumber(entry_day),
+                link = line,
+                month_name = current_month
+            })
+        end
+
+        ::continue::
     end
 
     return entries
