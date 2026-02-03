@@ -13,7 +13,7 @@ _G.vim = {
     end,
     tbl_deep_extend = function(behavior, ...)
         local result = {}
-        for _, tbl in ipairs({...}) do
+        for _, tbl in ipairs({ ... }) do
             for k, v in pairs(tbl) do
                 if type(v) == "table" and type(result[k]) == "table" then
                     result[k] = _G.vim.tbl_deep_extend(behavior, result[k], v)
@@ -29,7 +29,7 @@ _G.vim = {
             return path:gsub("^~", "/home/user")
         end,
         filereadable = function(path)
-            return 0  -- File doesn't exist by default
+            return 0 -- File doesn't exist by default
         end,
         writefile = function(lines, path)
             print("Mock: Writing file to " .. path)

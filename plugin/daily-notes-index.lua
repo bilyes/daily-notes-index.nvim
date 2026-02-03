@@ -27,7 +27,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- Create user command for daily notes index operations
 vim.api.nvim_create_user_command("DailyNotesIndex", function(opts)
     local daily_notes_index = require("daily-notes-index")
-    
+
     if opts.fargs[1] == "open" then
         daily_notes_index.open_index()
     else
@@ -36,7 +36,7 @@ vim.api.nvim_create_user_command("DailyNotesIndex", function(opts)
 end, {
     nargs = 1,
     complete = function()
-        return {"open"}
+        return { "open" }
     end,
     desc = "Daily notes index commands"
 })
