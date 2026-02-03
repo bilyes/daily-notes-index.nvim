@@ -23,3 +23,20 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end,
     desc = "Update index when saving daily notes"
 })
+
+-- Create user command for daily notes index operations
+vim.api.nvim_create_user_command("DailyNotesIndex", function(opts)
+    local daily_notes_index = require("daily-notes-index")
+    
+    if opts.fargs[1] == "open" then
+        daily_notes_index.open_index()
+    else
+        vim.notify("DailyNotesIndex: Unknown subcommand. Available: open", vim.log.levels.ERROR)
+    end
+end, {
+    nargs = 1,
+    complete = function()
+        return {"open"}
+    end,
+    desc = "Daily notes index commands"
+})

@@ -195,6 +195,27 @@ function M.get_config()
     return vim.deepcopy(config)
 end
 
+-- Opens the daily notes index file in a new buffer
+function M.open_index()
+    -- Check if configuration is set
+    if not config.daily_notes_folder then
+        vim.notify("daily-notes-index: Plugin not configured. Call setup() first.", vim.log.levels.ERROR)
+        return
+    end
+
+    local index_path = M.get_index_path(config.daily_notes_folder)
+
+    -- Create index file if it doesn't exist
+    if vim.fn.filereadable(index_path) ~= 1 then
+        local initial_content = string.format("# %s\n", config.index_title)
+        vim.fn.writefile(vim.split(initial_content, "\n"), index_path)
+        vim.notify("daily-notes-index: Created new index file at " .. index_path, vim.log.levels.INFO)
+    end
+
+    -- Open the index file
+    vim.cmd.edit(index_path)
+end
+
 -- Setup function for plugin manager compatibility
 -- @param opts table: Optional configuration options
 function M.setup(opts)
