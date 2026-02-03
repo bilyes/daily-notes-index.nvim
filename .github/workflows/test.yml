@@ -16,7 +16,7 @@ jobs:
     - name: Setup Lua
       uses: leafo/gh-actions-lua@v9
       with:
-        luaVersion: 5.1  # Neovim uses Lua 5.1
+        luaVersion: luajit  # LuaJIT is compatible with Lua 5.1 and supports goto
         buildCache: false
     
     - name: Run tests
