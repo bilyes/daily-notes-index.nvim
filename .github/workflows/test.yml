@@ -17,6 +17,7 @@ jobs:
       uses: leafo/gh-actions-lua@v9
       with:
         luaVersion: 5.1  # Neovim uses Lua 5.1
+        buildCache: false
     
     - name: Run tests
       run: |
