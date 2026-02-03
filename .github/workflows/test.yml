@@ -13,12 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Lua
-      uses: leafo/gh-actions-lua@v9
-      with:
-        luaVersion: luajit  # LuaJIT is compatible with Lua 5.1 and supports goto
-        buildCache: false
+    - name: Install LuaJIT
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y luajit
     
     - name: Run tests
       run: |
-        cd tests && LUA_PATH="../lua/?.lua;../lua/?/init.lua;;" lua init.lua
+        cd tests && LUA_PATH="../lua/?.lua;../lua/?/init.lua;;" luajit init.lua
