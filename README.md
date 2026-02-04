@@ -90,6 +90,10 @@ The plugin works automatically in the background. When you save a new daily note
    ```
 4. Organize entries by year and month in reverse chronological order
 
+### Background Processing
+
+The plugin processes index updates asynchronously to prevent blocking the editor, ensuring smooth operation even with large collections of daily notes.
+
 ### Daily Note Format
 
 The plugin expects daily notes to have date patterns in their filenames. Supported formats include:

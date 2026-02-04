@@ -150,4 +150,11 @@ The autocommand is grouped under "DailyNotesIndex" and can be managed
 with standard autocommand commands.
 
 ==============================================================================
+6. BACKGROUND PROCESSING                              *daily-notes-index-background*
+
+The plugin processes index updates asynchronously to ensure smooth operation
+without blocking the editor. This provides responsive experience when working
+with large collections of daily notes.
+
+==============================================================================
 vim:tw=78:ts=8:ft=help:norl:

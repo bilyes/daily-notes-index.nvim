@@ -64,7 +64,33 @@ _G.vim = {
         local pattern = string.format("([^%s]+)", sep)
         str:gsub(pattern, function(c) table.insert(result, c) end)
         return result
-    end
+    end,
+    defer_fn = function(fn, delay)
+        -- In test environment, execute immediately to simulate async
+        fn()
+    end,
+    uv = {
+        fs_scandir = function(path)
+            -- Mock handle that returns our test files
+            return {
+                files = {
+                    {name = "2025-01-30.md", type = "file"},
+                    {name = "2025-01-31.md", type = "file"},
+                    {name = "not-a-daily-note.txt", type = "file"},
+                    {name = "2024-12-25.md", type = "file"}
+                },
+                next_count = 0
+            }
+        end,
+        fs_scandir_next = function(handle)
+            if handle.next_count < #handle.files then
+                handle.next_count = handle.next_count + 1
+                local file = handle.files[handle.next_count]
+                return file.name, file.type
+            end
+            return nil
+        end
+    }
 }
 
 local daily_notes_index = require("daily-notes-index")

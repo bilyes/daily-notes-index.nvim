@@ -130,53 +130,44 @@ local function _build_note_link(year, month, day, path_str)
     return string.format("- [%s](%s)", link_text, path_str:gsub("%.md$", ""))
 end
 
--- Updates the index with a new daily note entry
+-- Updates the index with a new daily note entry (async)
 -- @param note_path string: The path of the newly created daily note
 -- @param index_path string: The path to the index file
 -- @return nil
 function M.update_index(note_path, index_path)
-    if not note_path or not index_path then
-        return
-    end
+    -- Validation
+    if not note_path or not index_path then return end
 
-    -- Parse date components
     local year, month, day = note_path:match("(%d%d%d%d)%-?(%d%d)%-?(%d%d)")
-    if not year or not month or not day then
-        return -- Invalid date format
-    end
+    if not year or not month or not day then return end
 
-    -- Convert to numbers
-    year = tonumber(year)
-    month = tonumber(month)
-    day = tonumber(day)
+    year, month, day = tonumber(year), tonumber(month), tonumber(day)
+    if year < 2000 or year > 2100 or month < 1 or month > 12 or day < 1 or day > 31 then return end
 
-    -- Validate date components
-    if year < 2000 or year > 2100 or month < 1 or month > 12 or day < 1 or day > 31 then
-        return -- Invalid date range
-    end
+    -- Process asynchronously to avoid blocking save operation
+    vim.defer_fn(function()
+        local entries = {}
 
+        -- Read existing entries if file exists
+        if vim.fn.filereadable(index_path) == 1 then
+            entries = _read_index_entries(index_path)
 
-    local entries = {}
-    if vim.fn.filereadable(index_path) == 1 then
-        -- Parse existing entries to check for duplicates
-        entries = _read_index_entries(index_path)
-        -- Check if this entry already exists
-        for _, entry in ipairs(entries) do
-            if entry.year == year and entry.month == month and entry.day == day then
-                -- Don't add if it's a duplicate
-                return
+            -- Check for duplicate and skip if found
+            for _, entry in ipairs(entries) do
+                if entry.year == year and entry.month == month and entry.day == day then
+                    return -- Duplicate, skip processing
+                end
             end
         end
-    end
 
-    local note_link = _build_note_link(year, month, day, note_path)
-    entries = _add_entry(entries, year, month, day, note_link)
-    local new_content = _build_index_content(entries)
+        -- Add new entry and write
+        local note_link = _build_note_link(year, month, day, note_path)
+        entries = _add_entry(entries, year, month, day, note_link)
+        local new_content = _build_index_content(entries)
+        vim.fn.writefile(vim.split(new_content, "\n"), index_path)
 
-    -- Write the updated index
-    vim.fn.writefile(vim.split(new_content, "\n"), index_path)
-
-    vim.notify(string.format("daily-notes-index: Added '%s' to index", note_path), vim.log.levels.INFO)
+        vim.notify(string.format("daily-notes-index: Added '%s' to index", note_path), vim.log.levels.INFO)
+    end, 10) -- Small delay to ensure file is fully written
 end
 
 -- Checks if the given note path corresponds to a daily note
@@ -222,7 +213,7 @@ function M.open_index()
     vim.cmd.edit(index_path)
 end
 
--- Syncs the index by scanning all daily notes and rebuilding from scratch
+-- Syncs the index by scanning all daily notes and rebuilding from scratch (async)
 function M.sync_index()
     -- Check if configuration is set
     if not config.daily_notes_folder then
@@ -230,51 +221,57 @@ function M.sync_index()
         return
     end
 
-    -- Get all files in the daily notes folder
-    local files = vim.fn.glob(config.daily_notes_folder .. "/*", false, true)
-    local entries = {}
-    local processed_count = 0
+    vim.notify("daily-notes-index: Scanning daily notes...", vim.log.levels.INFO)
 
-    for _, file_path in ipairs(files) do
-        -- Skip directories
-        if vim.fn.isdirectory(file_path) == 1 then
-            goto continue
-        end
-
-        -- Extract date from filename
-        local filename = vim.fn.fnamemodify(file_path, ":t")
-        local year, month, day = filename:match("(%d%d%d%d)%-?(%d%d)%-?(%d%d)")
-
-        if not year or not month or not day then
-            goto continue
-        end
-
-        -- Convert to numbers
-        year = tonumber(year)
-        month = tonumber(month)
-        day = tonumber(day)
-
-        -- Validate date range
-        if year < 2000 or year > 2100 or month < 1 or month > 12 or day < 1 or day > 31 then
-            goto continue
-        end
-
-        -- Get relative path from daily notes folder
-        local relative_path = file_path:gsub(
-            "^" .. config.daily_notes_folder:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0") .. "/", "")
-        local note_link = _build_note_link(year, month, day, relative_path)
-        entries = _add_entry(entries, year, month, day, note_link)
-        processed_count = processed_count + 1
-
-        ::continue::
+    -- Use vim.uv for async directory scanning
+    local handle = vim.uv.fs_scandir(config.daily_notes_folder)
+    if not handle then
+        vim.notify("daily-notes-index: Failed to scan directory", vim.log.levels.ERROR)
+        return
     end
 
-    -- Write the rebuilt index
-    local index_path = M.get_index_path(config.daily_notes_folder)
-    local new_content = _build_index_content(entries)
-    vim.fn.writefile(vim.split(new_content, "\n"), index_path)
+    -- Process files in single async operation
+    vim.defer_fn(function()
+        local entries = {}
+        local processed_count = 0
 
-    vim.notify(string.format("daily-notes-index: Synced %d daily notes to index", processed_count), vim.log.levels.INFO)
+        local name, typ = vim.uv.fs_scandir_next(handle)
+        local year, month, day
+        local note_link
+        while name do
+            if typ ~= 'file' then
+                goto continue
+            end
+
+            -- Extract date early to avoid processing non-daily notes
+            year, month, day = name:match("(%d%d%d%d)%-?(%d%d)%-?(%d%d)")
+            if not year or not month or not day then
+                goto continue
+            end
+
+            year, month, day = tonumber(year), tonumber(month), tonumber(day)
+
+            -- Validate date range
+            if year < 2000 or year > 2100 or month < 1 or month > 12 or day < 1 or day > 31 then
+                goto continue
+            end
+
+            note_link = _build_note_link(year, month, day, name)
+            entries = _add_entry(entries, year, month, day, note_link)
+            processed_count = processed_count + 1
+
+            ::continue::
+            name, typ = vim.uv.fs_scandir_next(handle)
+        end
+
+        -- Write results
+        local index_path = M.get_index_path(config.daily_notes_folder)
+        local new_content = _build_index_content(entries)
+        vim.fn.writefile(vim.split(new_content, "\n"), index_path)
+
+        vim.notify(string.format("daily-notes-index: Synced %d daily notes to index", processed_count),
+            vim.log.levels.INFO)
+    end, 0) -- Immediate async execution
 end
 
 -- Setup function for plugin manager compatibility
