@@ -154,7 +154,8 @@ When pushing changes to GitHub, follow these guidelines:
 3. **Test Validation**: Ensure all tests pass and functionality works as expected
 
 ### Branch and PR Guidelines
-1. **Branch Names**: Use the `question` tool to ask for user choice when uncertain. Provide options like:
+1. **Never Commit to Main**: Always create feature branches for development. Never commit directly to the main branch - all changes must go through PRs.
+2. **Branch Names**: Use the `question` tool to ask for user choice when uncertain. Provide options like:
    - `feature/add-new-functionality`
    - `fix/date-parsing-issue`
    - `docs/update-readme`
