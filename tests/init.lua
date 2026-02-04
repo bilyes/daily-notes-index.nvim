@@ -138,4 +138,19 @@ end
 
 daily_notes_index.sync_index()
 
+-- Test update_index with new note addition
+print("\nTesting update_index with new note...")
+-- Mock the index file to simulate existing file without the new note
+_G.vim.fn.filereadable = function(path)
+    return 1 -- Simulate file exists
+end
+
+-- Mock readfile to return existing index content (without the new note)
+_G.vim.fn.readfile = function(path)
+    return {"# Test Daily Notes", "", "## 2025", "", "### January", "", "- [2025-01-30 - Thursday](2025-01-30)"}
+end
+
+-- Test adding a new note
+daily_notes_index.update_index("/tmp/test-notes/2025-01-31.md", "/tmp/test-notes/test-index.md")
+
 print("All tests passed!")
