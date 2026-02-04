@@ -152,7 +152,6 @@ When pushing changes to GitHub, follow these guidelines:
 1. **Feature Completion**: Always ask for user confirmation before initiating any push to GitHub
 2. **Change Review**: Review all pending changes to understand the update scope before pushing
 3. **Test Validation**: Ensure all tests pass and functionality works as expected
-4. **Branch Management**: Never commit directly to the main branch. Always create and commit to feature branches, then open PRs from them
 
 ### Branch and PR Guidelines
 1. **Never Commit to Main**: Always create feature branches for development. Never commit directly to the main branch - all changes must go through PRs.
