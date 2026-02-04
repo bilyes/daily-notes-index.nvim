@@ -170,6 +170,7 @@ When pushing changes to GitHub, follow these guidelines:
 3. **PR Descriptions**: Keep descriptions concise and easy to read:
    - Start with a clear one-line summary
    - Use bullet points for key changes
+   - Avoid fluff, exaggerations, or redundant descriptions
    - Mention any breaking changes
    - Include testing notes if relevant
 
@@ -178,7 +179,8 @@ When pushing changes to GitHub, follow these guidelines:
 2. Use the `question` tool to ask for user confirmation before staging changes
 3. Create descriptive commit messages
 4. Use the `question` tool to request confirmation before pushing
-5. Create PR with clear, concise description
+5. Use the `question` tool to ask if user wants to open a PR or add more changes
+6. Create PR with clear, concise description
 
 ### Example PR Description
 ```
