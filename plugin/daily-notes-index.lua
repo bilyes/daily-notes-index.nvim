@@ -30,13 +30,15 @@ vim.api.nvim_create_user_command("DailyNotesIndex", function(opts)
 
     if opts.fargs[1] == "open" then
         daily_notes_index.open_index()
+    elseif opts.fargs[1] == "sync" then
+        daily_notes_index.sync_index()
     else
-        vim.notify("DailyNotesIndex: Unknown subcommand. Available: open", vim.log.levels.ERROR)
+        vim.notify("DailyNotesIndex: Unknown subcommand. Available: open, sync", vim.log.levels.ERROR)
     end
 end, {
     nargs = 1,
     complete = function()
-        return { "open" }
+        return { "open", "sync" }
     end,
     desc = "Daily notes index commands"
 })

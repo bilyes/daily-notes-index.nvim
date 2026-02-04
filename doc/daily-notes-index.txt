@@ -89,6 +89,13 @@ open_index()                                                    *open_index()*
 
     Parameters: None
 
+sync_index()                                                    *sync_index()*
+    Syncs the index by scanning all daily notes and rebuilding from scratch.
+    This creates a comprehensive index that reflects the current state of all
+    daily notes in the configured folder.
+
+    Parameters: None
+
 ==============================================================================
 4. COMMANDS                                           *daily-notes-index-commands*
 
@@ -109,6 +116,28 @@ open                                                    *:DailyNotesIndex-open*
     - Shows an error if the plugin is not configured
     - Creates the index file if it doesn't exist
     - Opens the file in the current window for editing
+
+sync                                                    *:DailyNotesIndex-sync*
+    Rebuilds the entire index file from scratch by scanning the daily notes
+    folder. This command creates a comprehensive index that reflects the current
+    state of all daily notes.
+
+    Example:
+        :DailyNotesIndex sync
+
+    The command performs the following actions:
+    - Scans the configured daily notes folder for all files
+    - Detects daily notes based on date patterns in filenames
+    - Validates date ranges (years 2000-2100, valid months/days)
+    - Rebuilds the entire index from scratch with all found daily notes
+    - Removes any entries from the index that no longer exist as files
+    - Shows a summary of how many notes were processed
+
+    This is useful when:
+    - You want to create an initial index for existing daily notes
+    - The index file has become corrupted or out of sync
+    - You've manually moved or renamed daily notes
+    - You want to clean up orphaned entries in the index
 
 ==============================================================================
 5. AUTOCOMMANDS                                    *daily-notes-index-autocmds*

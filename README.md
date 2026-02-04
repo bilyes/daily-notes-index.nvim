@@ -149,6 +149,28 @@ The command handles the following scenarios:
 - If the index file doesn't exist, it creates a new one with the configured title
 - Opens the index file in the current window for immediate editing
 
+### `DailyNotesIndex sync`
+
+Rebuilds the entire index file from scratch by scanning the daily notes folder. This command creates a comprehensive index that reflects the current state of all daily notes.
+
+```vim
+:DailyNotesIndex sync
+```
+
+The command performs the following actions:
+- Scans the configured daily notes folder for all files
+- Detects daily notes based on date patterns in filenames
+- Validates date ranges (years 2000-2100, valid months/days)
+- Rebuilds the entire index from scratch with all found daily notes
+- Removes any entries from the index that no longer exist as files
+- Shows a summary of how many notes were processed
+
+This is useful when:
+- You want to create an initial index for existing daily notes
+- The index file has become corrupted or out of sync
+- You've manually moved or renamed daily notes
+- You want to clean up orphaned entries in the index
+
 ## License
 
 MIT License# daily-notes-index.nvim
