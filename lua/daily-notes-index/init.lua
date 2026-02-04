@@ -175,6 +175,11 @@ function M.update_index(note_path, index_path)
 
     -- Write the updated index
     vim.fn.writefile(vim.split(new_content, "\n"), index_path)
+    
+    -- Notify only when a new daily note was added
+    local link_text = string.format("%s-%s-%s - %s", year,
+        string.format("%02d", month), string.format("%02d", day), os.date("%A", os.time({ year = year, month = month, day = day })))
+    vim.notify(string.format("daily-notes-index: Added '%s' to index", link_text), vim.log.levels.INFO)
 end
 
 -- Checks if the given note path corresponds to a daily note
