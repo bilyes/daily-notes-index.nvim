@@ -34,6 +34,15 @@ _G.vim = {
         writefile = function(lines, path)
             print("Mock: Writing file to " .. path)
             return 1
+        end,
+        isdirectory = function(path)
+            return 0
+        end,
+        fnamemodify = function(path, modifier)
+            if modifier == ":t" then
+                return path:match("/([^/]*)$") or path
+            end
+            return path
         end
     },
     cmd = {
@@ -108,5 +117,25 @@ print("\nTesting open_index without config...")
 print("Error handling test: open_index checks config.daily_notes_folder")
 print("If config.daily_notes_folder is nil, it shows error message")
 print("This is verified by the code logic in open_index function")
+
+-- Test sync_index function
+print("\nTesting sync_index function...")
+-- Mock vim.fn.glob to return test files
+_G.vim.fn.glob = function(pattern, nosuf, list)
+    -- Return mock daily notes files
+    return {
+        "/tmp/test-notes/2025-01-30.md",
+        "/tmp/test-notes/2025-01-31.md",
+        "/tmp/test-notes/not-a-daily-note.txt",
+        "/tmp/test-notes/2024-12-25.md"
+    }
+end
+
+-- Mock vim.fn.isdir to return false for files
+_G.vim.fn.isdir = function(path)
+    return 0
+end
+
+daily_notes_index.sync_index()
 
 print("All tests passed!")

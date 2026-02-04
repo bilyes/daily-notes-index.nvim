@@ -67,6 +67,8 @@ return M
 
 ### Error Handling
 - Return early from functions when validation fails
+- Use early return/continue pattern in loops to minimize indentation (use `goto continue` in Lua)
+- Prefer early validation and exit over deeply nested conditionals
 - Use `vim.notify()` for user-facing messages with appropriate log levels
 - Use `error()` for critical setup failures (missing required config)
 - Always validate date ranges (year 2000-2100, month 1-12, day 1-31)
@@ -126,7 +128,10 @@ return M
 1. **Adding Features**:
    - Add public functions to module table `M`
    - Keep backward compatibility
-   - Update README.md for new API functions
+   - Update README.md for new API functions and user commands
+   - Update doc/daily-notes-index.txt for new functions and commands (Vim help format)
+   - Update documentation for significant new features
+   - When uncertain about documentation scope, use the `question` tool to ask the user if updates are needed
    - Add tests for new functionality
 
 2. **Bug Fixes**:

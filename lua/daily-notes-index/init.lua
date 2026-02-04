@@ -220,6 +220,61 @@ function M.open_index()
     vim.cmd.edit(index_path)
 end
 
+-- Syncs the index by scanning all daily notes and rebuilding from scratch
+function M.sync_index()
+    -- Check if configuration is set
+    if not config.daily_notes_folder then
+        vim.notify("daily-notes-index: Plugin not configured. Call setup() first.", vim.log.levels.ERROR)
+        return
+    end
+
+    -- Get all files in the daily notes folder
+    local files = vim.fn.glob(config.daily_notes_folder .. "/*", false, true)
+    local entries = {}
+    local processed_count = 0
+
+    for _, file_path in ipairs(files) do
+        -- Skip directories
+        if vim.fn.isdirectory(file_path) == 1 then
+            goto continue
+        end
+
+        -- Extract date from filename
+        local filename = vim.fn.fnamemodify(file_path, ":t")
+        local year, month, day = filename:match("(%d%d%d%d)%-?(%d%d)%-?(%d%d)")
+
+        if not year or not month or not day then
+            goto continue
+        end
+
+        -- Convert to numbers
+        year = tonumber(year)
+        month = tonumber(month)
+        day = tonumber(day)
+
+        -- Validate date range
+        if year < 2000 or year > 2100 or month < 1 or month > 12 or day < 1 or day > 31 then
+            goto continue
+        end
+
+        -- Get relative path from daily notes folder
+        local relative_path = file_path:gsub(
+            "^" .. config.daily_notes_folder:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0") .. "/", "")
+        local note_link = _build_note_link(year, month, day, relative_path)
+        entries = _add_entry(entries, year, month, day, note_link)
+        processed_count = processed_count + 1
+
+        ::continue::
+    end
+
+    -- Write the rebuilt index
+    local index_path = M.get_index_path(config.daily_notes_folder)
+    local new_content = _build_index_content(entries)
+    vim.fn.writefile(vim.split(new_content, "\n"), index_path)
+
+    vim.notify(string.format("daily-notes-index: Synced %d daily notes to index", processed_count), vim.log.levels.INFO)
+end
+
 -- Setup function for plugin manager compatibility
 -- @param opts table: Optional configuration options
 function M.setup(opts)
