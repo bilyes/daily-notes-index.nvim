@@ -127,7 +127,7 @@ local function _build_note_link(year, month, day, path_str)
         string.format("%02d", month), string.format("%02d", day), day_name)
 
     -- Create the markdown link with relative path
-    return string.format("- [%s](%s)", link_text, path_str:gsub("%.md$", ""))
+    return string.format("- [%s](%s)", link_text, path_str)
 end
 
 -- Updates the index with a new daily note entry (async)
@@ -160,8 +160,9 @@ function M.update_index(note_path, index_path)
             end
         end
 
-        -- Add new entry and write
-        local note_link = _build_note_link(year, month, day, note_path)
+        -- Add new entry and write. The index lives in the daily notes folder, so the
+        -- filename is the note's path relative to it.
+        local note_link = _build_note_link(year, month, day, vim.fn.fnamemodify(note_path, ":t"))
         entries = _add_entry(entries, year, month, day, note_link)
         local new_content = _build_index_content(entries)
         vim.fn.writefile(vim.split(new_content, "\n"), index_path)
@@ -175,8 +176,8 @@ end
 -- @param daily_notes_folder_path string: The configured daily notes folder path
 -- @return boolean: true if it's a daily note, false otherwise
 function M.is_daily_note(note_path, daily_notes_folder_path)
-    -- Check if this is a daily note in the configured folder
-    return note_path:match(daily_notes_folder_path:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0"))
+    -- Check if this is a daily note in the configured folder (plain find: no pattern escaping)
+    return note_path:find(daily_notes_folder_path, 1, true) ~= nil
 end
 
 -- Gets the path to the index file

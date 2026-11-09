@@ -24,7 +24,11 @@ by year and month.
 The plugin detects daily notes based on date patterns in filenames and creates
 chronologically organized links in the following format:
 
-    - 2025-01-31 - Friday - (path/to/note)
+    - [2025-01-31 - Friday](2025-01-31.md)
+
+Links are relative to the index file, which lives in the daily notes folder.
+Earlier versions linked each note by its full path when it was saved; run
+|:DailyNotesIndex-sync| once to rewrite those entries.
 
 ==============================================================================
 2. CONFIGURATION                                      *daily-notes-index-config*

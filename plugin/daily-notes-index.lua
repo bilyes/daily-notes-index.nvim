@@ -11,7 +11,9 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = "*",
     callback = function(args)
         local daily_notes_index = require("daily-notes-index")
-        local path = args.file
+        -- args.file is relative when the buffer was opened with a relative path, and
+        -- wouldn't match the absolute daily notes folder
+        local path = vim.fn.fnamemodify(args.file, ":p")
 
         -- Get user config
         local config = daily_notes_index.get_config()

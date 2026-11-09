@@ -86,7 +86,7 @@ The plugin works automatically in the background. When you save a new daily note
 2. Extract the date from the filename (supports formats like `2025-01-31.md`)
 3. Update the index file with a new entry in the format:
    ```markdown
-   - [2025-01-31 - Friday](path/to/note)
+   - [2025-01-31 - Friday](2025-01-31.md)
    ```
 4. Organize entries by year and month in reverse chronological order
 
@@ -112,14 +112,16 @@ The generated index file (`index.md` by default) will look like:
 
 ### January
 
-- [2025-01-31 - Friday](path/to/2025-01-31)
-- [2025-01-30 - Thursday](path/to/2025-01-30)
-- [2025-01-29 - Wednesday](path/to/2025-01-29)
+- [2025-01-31 - Friday](2025-01-31.md)
+- [2025-01-30 - Thursday](2025-01-30.md)
+- [2025-01-29 - Wednesday](2025-01-29.md)
 
 ### February
 
-- [2025-02-01 - Saturday](path/to/2025-02-01)
+- [2025-02-01 - Saturday](2025-02-01.md)
 ```
+
+Links are relative to the index file, which lives in the daily notes folder. Earlier versions linked each note by its full path when it was saved; run `:DailyNotesIndex sync` once to rewrite those entries.
 
 ## API Functions
 
