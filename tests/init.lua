@@ -93,6 +93,23 @@ _G.vim = {
     }
 }
 
+-- Record what each mocked write puts in the index, so the tests can check its lines
+local written = {}
+_G.vim.fn.writefile = function(lines, path)
+    print("Mock: Writing file to " .. path)
+    written[path] = lines
+    return 1
+end
+
+local function assert_has_line(lines, expected)
+    for _, line in ipairs(lines or {}) do
+        if line == expected then
+            return
+        end
+    end
+    error("Expected index line not found: " .. expected)
+end
+
 local daily_notes_index = require("daily-notes-index")
 
 -- Test basic functionality
@@ -128,6 +145,12 @@ print("Custom config:", inspect(new_config))
 -- Test daily note detection
 local is_daily = daily_notes_index.is_daily_note("/tmp/test-notes/2025-01-31.md", "/tmp/test-notes")
 print("Is daily note:", is_daily)
+assert(is_daily == true, "is_daily_note missed a note in the daily notes folder")
+-- Several pattern characters ("-", ".") in the folder path must not break the match
+assert(daily_notes_index.is_daily_note("/home/user/my-daily-notes/2025-01-31.md", "/home/user/my-daily-notes") == true,
+    "is_daily_note missed a note in a folder whose path has several pattern characters")
+assert(daily_notes_index.is_daily_note("/home/user/other/2025-01-31.md", "/home/user/my-daily-notes") == false,
+    "is_daily_note matched a note outside the daily notes folder")
 
 -- Test index path generation
 local index_path = daily_notes_index.get_index_path("/tmp/test-notes")
@@ -164,6 +187,15 @@ end
 
 daily_notes_index.sync_index()
 
+local synced = written["/tmp/test-notes/test-index.md"]
+assert_has_line(synced, "- [2025-01-31 - Friday](2025-01-31.md)")
+assert_has_line(synced, "- [2025-01-30 - Thursday](2025-01-30.md)")
+assert_has_line(synced, "- [2024-12-25 - Wednesday](2024-12-25.md)")
+for _, line in ipairs(synced) do
+    assert(not line:find("not-a-daily-note", 1, true), "sync_index indexed a file without a date")
+end
+print("sync_index links each note by filename")
+
 -- Test update_index with new note addition
 print("\nTesting update_index with new note...")
 -- Mock the index file to simulate existing file without the new note
@@ -173,10 +205,16 @@ end
 
 -- Mock readfile to return existing index content (without the new note)
 _G.vim.fn.readfile = function(path)
-    return {"# Test Daily Notes", "", "## 2025", "", "### January", "", "- [2025-01-30 - Thursday](2025-01-30)"}
+    return {"# Test Daily Notes", "", "## 2025", "", "### January", "", "- [2025-01-30 - Thursday](2025-01-30.md)"}
 end
 
 -- Test adding a new note
+written = {}
 daily_notes_index.update_index("/tmp/test-notes/2025-01-31.md", "/tmp/test-notes/test-index.md")
+
+local updated = written["/tmp/test-notes/test-index.md"]
+assert_has_line(updated, "- [2025-01-31 - Friday](2025-01-31.md)")
+assert_has_line(updated, "- [2025-01-30 - Thursday](2025-01-30.md)")
+print("update_index links the new note by filename, not its full path, and keeps existing entries")
 
 print("All tests passed!")
